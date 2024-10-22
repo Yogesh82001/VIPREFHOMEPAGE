@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIP Reference Portal</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- Custom CSS -->
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .navbar-dark {
+      background-color: #222;
+    }
+    .header-info {
+      background: linear-gradient(135deg, #f5f7fa, #c3d9ef);
+      padding: 10px; /* Reduced padding */
+      margin-bottom: 0; /* No margin to stick to navbar */
+    }
+    .content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+    .footer {
+  background-color: #222;
+  color: white;
+  padding: 10px 20px;
+}
+
+.footer .footer-left {
+  text-align: left;
+}
+
+.footer .footer-right {
+  text-align: right;
+}
+
+.footer a {
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: white;
+}
+
+    .live-clock {
+      font-weight: bold;
+      color: #f8f9fa;
+    }
+
+    /* Custom styles for off-canvas */
+    .offcanvas {
+      background-color: #000;
+      color: white;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .offcanvas-header {
+      background-color: #222;
+      color: white;
+    }
+
+    .offcanvas-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .nav.flex-column {
+      margin-bottom: auto;
+    }
+
+    .offcanvas-body .nav-link {
+      color: white;
+      text-align: left;
+      padding: 10px;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #444;
+    }
+
+    .offcanvas-body .nav-link:hover {
+      background-color: #333;
+    }
+
+    .offcanvas-footer {
+      padding: 10px;
+    }
+
+    .offcanvas-body .btn-custom {
+      background-color: #222;
+      color: white;
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+      border: none;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .offcanvas-body .btn-custom:hover {
+      background-color: #333;
+    }
+
+    .pendency-counter {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .pendency-counter h3 {
+      color: #343a40;
+    }
+
+    .pendency-counter p {
+      color: #6c757d;
+    }
+
+    .pendency-number {
+      font-size: 3rem;
+      color: #007bff;
+    }
+
+    .btn-pendency {
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+
+    .reason-container {
+      margin-top: 20px;
+      background-color: #fff;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .reason-container h6 {
+      color: #343a40;
+    }
+
+    .reason-container p {
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Department and Officer Info -->
+<div class="header-info">
+  <div class="container">
+    <div class="card border-0" style="border-radius: 10px; background-color: #f8f9fa; padding: 0.2rem;">
+      <div class="card-body p-1" style="padding: 0.2rem;">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-building fa-sm me-1" style="color: #007bff; font-size: 0.8rem;"></i>
+            <div class="text-start">
+              <h6 class="mb-0" style="color: #343a40; font-size: 0.75rem;">Department:</h6>
+              <p id="departmentName" class="mb-0" style="color: #6c757d; font-size: 0.65rem;">Loading...</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-center">
+            <i class="fas fa-user-tie fa-sm me-1" style="color: #28a745; font-size: 0.8rem;"></i>
+            <div class="text-end">
+              <h6 class="mb-0" style="color: #343a40; font-size: 0.75rem;">Officer Name:</h6>
+              <p id="officerName" class="mb-0" style="color: #6c757d; font-size: 0.65rem;">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto"></ul>
+        
+        <span class="navbar-text live-clock me-3" id="liveClock">
+          <!-- JavaScript will update this -->
+        </span>
+
+        <!-- Right-aligned Hamburger Menu -->
+        <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+          <i class="fas fa-bars"></i> <!-- Use Font Awesome icon for the menu -->
+        </button>
+      </div>
+    </div>
+  </nav>
+
+ <!-- Off-canvas Slide Drawer -->
+ <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasMenuLabel">VIP Reference</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Add</a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="#">Edit</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Reply</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Close and Reopen</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="helpFileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Report
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="helpFileDropdown">
+          <li><a class="dropdown-item" href="#">General Report</a></li>
+          <li><a class="dropdown-item" href="#">Abstract Report</a></li>
+          <li><a class="dropdown-item" href="#">VIP Zone Wise Pendency</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="helpFileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Admin
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="helpFileDropdown">
+          <l<li><a class="dropdown-item" href="#">Constituency Type</a></li>
+          <li><a class="dropdown-item" href="#">Add Political Party</a></li>
+          <li><a class="dropdown-item" href="#">Add Lok Sabha</a></li>
+          <li><a class="dropdown-item" href="#">Add Vidhan Sabha</a></li>
+          <li><a class="dropdown-item" href="#">Add Lok Sabha Constituency</a></li>
+          <li><a class="dropdown-item" href="#">Add Vidhan Sabha Constituency</a></li>
+          <li><a class="dropdown-item" href="#">Add Member of Lok/Vidhan Sabha</a></li>
+          <li><a class="dropdown-item" href="#">Link Member of Lok/Vidhan Sabha</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="techSupportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Tech Support
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="techSupportDropdown">
+          <li><a class="dropdown-item" href="#">Support Ticket</a></li>
+          <li><a class="dropdown-item" href="#">Technical Support Team</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="helpFileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Help File
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="helpFileDropdown">
+          <li><a class="dropdown-item" href="#">Online Agrement Number Generation</a></li>
+          <li><a class="dropdown-item" href="#">Online APAR Submission</a></li>
+          <li><a class="dropdown-item" href="#">DSC Creation Help Book</a></li>
+        </ul>
+      </li>
+    </ul>
+    <!-- Fixed Footer Buttons -->
+    <div class="offcanvas-footer">
+      <button class="btn btn-custom">Back to User Module</button>
+      <button class="btn btn-custom">Logout</button>
+    </div>
+  </div>
+</div>
+
+  <!-- Main Content -->
+  <div class="content">
+    
+  </div>
+
+   <!-- Footer -->
+<div class="footer d-flex justify-content-between">
+  <div class="footer-left">
+    &copy; 2024 All Rights Reserved. Version 1.0.6 / 05-09-2024
+  </div>
+  <div class="footer-right">
+    This portal is designed, developed and maintained by 
+    <a href="#">M/s Calibre Websol Pvt. Ltd.</a>
+  </div>
+</div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- JavaScript for Live Clock -->
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const options = {
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit'
+      };
+      const formattedDate = now.toLocaleDateString('en-GB', options);
+      document.getElementById('liveClock').textContent = formattedDate;
+    }
+
+    // Update the clock every second
+    setInterval(updateClock, 1000);
+
+    // Initialize clock when the page loads
+    updateClock();
+  </script>
+  <!-- JavaScript to Fetch Department and Officer Info -->
+  <script>
+    // Simulating a data fetch from a server or an API
+    const departmentData = {
+      department: "Public Works Department",
+      officer: "Mr. Rajiv Kumar"
+    };
+
+    function fetchDepartmentInfo() {
+      // Simulate a delay (like fetching from a server)
+      setTimeout(() => {
+        document.getElementById('departmentName').textContent = departmentData.department;
+        document.getElementById('officerName').textContent = departmentData.officer;
+      }, 1000); // Simulate a 1-second delay
+    }
+
+    // Fetch department and officer info when the page loads
+    fetchDepartmentInfo();
+  </script>
+  <!-- JavaScript for Pendency Increment -->
+  <script>
+    // Initial pendency value
+    let pendencyCount = 10;
+
+    // Function to update the pendency number in the UI
+    function updatePendency() {
+      const pendencyElement = document.getElementById('pendencyNumber');
+      pendencyElement.textContent = pendencyCount;
+    }
+
+    // Add event listener to the "Add Pendency" button
+    document.getElementById('addPendencyBtn').addEventListener('click', () => {
+      pendencyCount++;  // Increment the pendency count by 1
+      updatePendency(); // Update the displayed number
+    });
+
+    // Initially update the UI with the starting number
+    updatePendency();
+  </script>
+  <!-- JavaScript to dynamically load the "Add VIP Reference" form -->
+<script>
+  // Function to load the "Add VIP Reference" form content into the main content area
+  function loadAddVIPReferenceForm() {
+    const contentDiv = document.querySelector('.content');
+
+    // Define the HTML for the form and the table
+    const formContent = `
+      <div class="container">
+        <h2>Add VIP Reference</h2>
+        <form id="addVipReferenceForm">
+          <div>
+            <label for="letterNo">Letter No:</label>
+            <input type="text" id="letterNo" name="letterNo" class="form-control" required>
+          </div>
+          <div>
+            <label for="nameConstituency">Name & Constituency:</label>
+            <input type="text" id="nameConstituency" name="nameConstituency" class="form-control" required>
+          </div>
+          <div>
+            <label for="addressedTo">Addressed To:</label>
+            <input type="text" id="addressedTo" name="addressedTo" class="form-control" required>
+          </div>
+          <div>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" class="form-control" required>
+          </div>
+          <div>
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" class="form-control" required>
+          </div>
+          <div>
+            <label for="remark">Remark:</label>
+            <input type="text" id="remark" name="remark" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-primary mt-2">Add VIP Reference</button>
+        </form>
+
+        <h2 class="mt-4">VIP References List</h2>
+        <table id="vipReferencesTable" class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Letter No</th>
+              <th>Name & Constituency</th>
+              <th>Addressed To</th>
+              <th>Date</th>
+              <th>Subject</th>
+              <th>Remark</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data will be added here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    // Inject the form content into the content area
+    contentDiv.innerHTML = formContent;
+
+    // Add event listener to handle form submission and update the table
+    document.getElementById("addVipReferenceForm").addEventListener("submit", function(event){
+      event.preventDefault();
+
+      // Get form values
+      const letterNo = document.getElementById("letterNo").value;
+      const nameConstituency = document.getElementById("nameConstituency").value;
+      const addressedTo = document.getElementById("addressedTo").value;
+      const date = document.getElementById("date").value;
+      const subject = document.getElementById("subject").value;
+      const remark = document.getElementById("remark").value;
+
+      // Add data to the table
+      const table = document.getElementById("vipReferencesTable").getElementsByTagName("tbody")[0];
+      const newRow = table.insertRow();
+
+      newRow.innerHTML = `<td>${letterNo}</td>
+                          <td>${nameConstituency}</td>
+                          <td>${addressedTo}</td>
+                          <td>${date}</td>
+                          <td>${subject}</td>
+                          <td>${remark}</td>`;
+
+      // Clear form fields after submission
+      document.getElementById("addVipReferenceForm").reset();
+    });
+  }
+
+  // Attach the event listener to the "Add" button in the off-canvas menu
+  document.querySelector('.nav-link[href="#"]').addEventListener('click', loadAddVIPReferenceForm);
+</script>
+
+</body>
+</html>
